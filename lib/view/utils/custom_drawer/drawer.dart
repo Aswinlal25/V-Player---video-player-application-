@@ -33,18 +33,7 @@ class MyDrawer extends StatelessWidget {
                         Container(
                             width: MediaQuery.of(context).size.width * 0.25,
                             height: MediaQuery.of(context).size.height * 0.11,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.white.withOpacity(0.6),
-                                  spreadRadius: 2,
-                                  blurRadius: 15,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
-                            ),
+                            decoration: logoContainerStyle(),
                             child: Image.asset(
                                 'assets/images/Video_player_logo-removebg-preview.png')),
                         SizedBox(
@@ -52,11 +41,7 @@ class MyDrawer extends StatelessWidget {
                         ),
                         Text(
                           'V Player',
-                          style: TextStyle(
-                              color: Colors.white60,
-                              fontWeight: FontWeight.w300,
-                              letterSpacing: 1,
-                              fontSize: 20),
+                          style: logoTxtstyle(),
                         ),
                         SizedBox(
                           height: 35,

@@ -1,7 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:video_player/view/auth_page/auth_page.dart';
+import 'package:video_player/view/utils/constant_colors/colors.dart';
 
 class SplashSreen extends StatefulWidget {
   const SplashSreen({super.key});
@@ -33,7 +33,7 @@ class _SplashSreenState extends State<SplashSreen> {
                 height: MediaQuery.of(context).size.height * 0.14,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
-                  color: Colors.white,
+                  color: kwhite,
                   boxShadow: [
                     BoxShadow(
                       color: Theme.of(context)

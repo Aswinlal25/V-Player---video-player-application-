@@ -1,14 +1,14 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pinput/pinput.dart';
-import 'package:video_player/controller/auth/auth.dart';
-import 'package:video_player/view/profile_create_screen/profile_create.dart';
+import 'package:video_player/controller/bussiness_logic/auth/auth_bloc.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key, required this.verificationId});
-final String verificationId;
+  final String verificationId;
   @override
   State<OtpScreen> createState() => _OtpScreenState();
 }
@@ -16,7 +16,6 @@ final String verificationId;
 class _OtpScreenState extends State<OtpScreen> {
   final TextEditingController otpPinController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  
 
   @override
   Widget build(BuildContext context) {
@@ -89,24 +88,13 @@ class _OtpScreenState extends State<OtpScreen> {
                 androidSmsAutofillMethod:
                     AndroidSmsAutofillMethod.smsRetrieverApi,
                 controller: otpPinController,
-                length: 4,
+                length: 6,
                 defaultPinTheme: defaultPinTheme,
                 focusedPinTheme: defaultPinTheme.copyWith(
                   decoration: defaultPinTheme.decoration!.copyWith(
                     border: Border.all(color: theme.colorScheme.secondary),
                   ),
                 ),
-                // validator: (String? value) {
-                //   // Add your validation logic here
-                //   if (value!.isEmpty || value.length != 6) {
-                //     showSnack2(
-                //         context: context,
-                //         message:
-                //             'Please enter a valid 6-digit OTP');
-                //     return null;
-                //   }
-                //   return null;
-                // },
               ),
             ),
             SizedBox(
@@ -114,16 +102,14 @@ class _OtpScreenState extends State<OtpScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                AuthRepositary authRepositary = AuthRepositary();
-                authRepositary
-                    .verifyOtp(otpPinController.text.trim(),widget.verificationId);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ProfileCreateScreen()));
+                print(otpPinController.text.toString());
+                context.read<AuthBloc>().add(AuthEvent.verifyOTP(
+                    context: context,
+                    verificationId: widget.verificationId,
+                    otpSent: otpPinController.text.trim()));
               },
               style: ElevatedButton.styleFrom(
-                primary: theme.colorScheme.primary,
+                backgroundColor: theme.colorScheme.primary,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),

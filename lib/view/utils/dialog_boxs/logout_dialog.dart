@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:video_player/controller/service/auth.dart';
 
 class LogoutDialog extends StatelessWidget {
   static const IconData heart_broken_sharp =
@@ -44,20 +45,23 @@ class LogoutDialog extends StatelessWidget {
                           ElevatedButton(
                             onPressed: () {
                               try {
-                                {
-                                  // AuthApi authApi = AuthApi();
-                                  // authApi.logout();
-                                  // Navigator.pop(context);
-                                  // Navigator.pop(context);
-                                }
+                                // context
+                                //     .read<AuthBloc>()
+                                //     .add(AuthEvent.signOut(context: context));
+                                // AuthApi authApi = AuthApi();
+                                // authApi.logout();
+                                // Navigator.pop(context);
+                                // Navigator.pop(context);
+
+                                AuthRepositary authRepositary =
+                                    AuthRepositary();
+                                authRepositary.logout(context);
                               } catch (e) {
                                 print('Error: $e');
-                                // Handle any exceptions here
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: theme.colorScheme.primary,
-                              // Color.fromARGB(255, 0, 0, 0),
+                              backgroundColor: theme.colorScheme.primary,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
@@ -103,21 +107,6 @@ class LogoutDialog extends StatelessWidget {
                       ),
                     ],
                   ),
-                  // Positioned(
-                  //   bottom: 73,
-                  //   right: 105,
-                  //   child: Transform.rotate(
-                  //     angle: -1.5708, // Angle in radians (90 degrees)
-                  //     child: Text(
-                  //       "Logout",
-                  //       style: TextStyle(
-                  //           fontSize: 70,
-                  //           color: Colors.white12,
-                  //           letterSpacing: 0.4,
-                  //           wordSpacing: 1),
-                  //     ),
-                  //   ),
-                  // )
                 ],
               )
             ],

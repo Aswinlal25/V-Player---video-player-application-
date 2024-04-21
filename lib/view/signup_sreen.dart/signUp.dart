@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:video_player/view/login_sreen/widgets/privacy_policy_text.dart';
-import 'package:video_player/view/otp_screen/otp.dart';
+//import 'package:video_player/view/otp_screen/otp.dart';
 
 class SignUpScreen extends StatelessWidget {
   final Function()? onTap;
@@ -147,7 +147,8 @@ class SignUpScreen extends StatelessWidget {
                   //     context, MaterialPageRoute(builder: (_) => OtpScreen()));
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: primary,
+                  backgroundColor:
+                      primary, // Use backgroundColor instead of primary
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),

@@ -1,10 +1,13 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-import 'package:video_player/controller/auth/auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:video_player/controller/bussiness_logic/auth/auth_bloc.dart';
+
 import 'package:video_player/view/login_sreen/widgets/privacy_policy_text.dart';
 import 'package:lottie/lottie.dart';
-import 'package:video_player/view/otp_screen/otp.dart';
+import 'package:video_player/view/utils/constants/constants.dart';
 
 class LoginScreen extends StatefulWidget {
   final Color primary;
@@ -22,11 +25,11 @@ class LoginScreen extends StatefulWidget {
 
 TextEditingController phoneNoController = TextEditingController();
 TextEditingController countryCodeController = TextEditingController();
+String completePhoneNumber = '';
 
 class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
-    countryCodeController.text = '+91';
     super.initState();
   }
 
@@ -78,79 +81,36 @@ class _LoginScreenState extends State<LoginScreen> {
                 //  key: formKey,
                 child: Row(
                   children: [
-                    Container(
-                      height: screenSize.height * 0.066,
-                      width: screenSize.width * 0.17,
-                      child: TextFormField(
-                        controller: countryCodeController,
-                        obscureText: true,
-                        validator: (val) => val != null && val.isNotEmpty
-                            ? null
-                            : 'Required Field',
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.surface,
-                              width: 2.0,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.surface,
-                              width: 2.0,
-                            ),
-                          ),
-                          hintText: '+91',
-                          hintStyle: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            letterSpacing: 2,
-                            fontSize: 15,
-                          ),
-                        ),
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
                     SizedBox(
                       width: 10,
                     ),
                     Container(
                       height: screenSize.height * 0.066,
-                      width: screenSize.width * 0.67,
-                      child: TextFormField(
-                        controller: phoneNoController,
-                        // keyboardType: TextInputType.number,
-                        validator: (val) => val != null && val.isNotEmpty
-                            ? null
-                            : 'Required Field',
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            borderSide: BorderSide(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .surface, // Border color in normal state
-                              width: 2.0,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.surface,
-                            ),
-                          ),
-                          hintText: 'Phone Number',
-                          hintStyle: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            letterSpacing: 2,
-                            fontSize: 15,
-                          ),
+                      width: screenSize.width * 0.84,
+                      child: InternationalPhoneNumberInput(
+                        onInputChanged: (PhoneNumber number) {
+                          setState(() {
+                            completePhoneNumber = number.phoneNumber.toString();
+                          });
+                        },
+                        onInputValidated: (bool value) {
+                          print(value);
+                        },
+                        selectorConfig: SelectorConfig(
+                          selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                          useBottomSheetSafeArea: true,
                         ),
-                        style: const TextStyle(
-                            color: Colors.black,
-                            letterSpacing: 2,
-                            fontWeight: FontWeight.w500),
+                        ignoreBlank: false,
+                        autoValidateMode: AutovalidateMode.disabled,
+                        selectorTextStyle: TextStyle(
+                            color: Theme.of(context).colorScheme.primary),
+                        // initialValue: "number",
+                        textFieldController: phoneNoController,
+                        formatInput: true,
+                        keyboardType: TextInputType.numberWithOptions(
+                            signed: true, decimal: true),
+                        inputBorder: OutlineInputBorder(),
+                        onSaved: (PhoneNumber number) {},
                       ),
                     ),
                   ],
@@ -161,14 +121,12 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  AuthRepositary authRepositary = AuthRepositary();
-                  authRepositary.loginwithPhoneNumber(
-                      phoneNoController.text.trim(), context);
-                  // Navigator.push(context,
-                  //     MaterialPageRoute(builder: (context) => OtpScreen(verificationId: '',)));
+                  context.read<AuthBloc>().add(AuthEvent.signWithPhoneNumber(
+                      context: context, number: completePhoneNumber));
+                  print("----------$completePhoneNumber");
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: widget.primary,
+                  backgroundColor: widget.primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -191,9 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: 15,
-              ),
+              kheight15,
               Center(
                 child: Align(
                   alignment: Alignment.center,
