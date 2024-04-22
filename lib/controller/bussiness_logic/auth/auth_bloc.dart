@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:video_player/controller/auth/auth.dart';
+import 'package:video_player/controller/functions/auth.dart';
 import 'package:video_player/view/home_screen/home.dart';
 import 'package:video_player/view/login_or_signup/login_or_signup.dart';
 import 'package:video_player/view/otp_screen/otp.dart';

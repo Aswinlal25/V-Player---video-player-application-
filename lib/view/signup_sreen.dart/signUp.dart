@@ -1,14 +1,24 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:lottie/lottie.dart';
+import 'package:video_player/controller/bussiness_logic/auth/auth_bloc.dart';
 import 'package:video_player/view/login_sreen/widgets/privacy_policy_text.dart';
 //import 'package:video_player/view/otp_screen/otp.dart';
 
-class SignUpScreen extends StatelessWidget {
+class SignUpScreen extends StatefulWidget {
   final Function()? onTap;
   const SignUpScreen({super.key, this.onTap});
 
+  @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  TextEditingController phoneNoControllers = TextEditingController();
+  String completePhoneNumber = '';
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -62,77 +72,31 @@ class SignUpScreen extends StatelessWidget {
                   children: [
                     Container(
                       height: screenSize.height * 0.066,
-                      width: screenSize.width * 0.17,
-                      child: TextFormField(
-                        //controller: _passwordController,
-
-                        validator: (val) => val != null && val.isNotEmpty
-                            ? null
-                            : 'Required Field',
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.surface,
-                              width: 2.0,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.surface,
-                              width: 2.0,
-                            ),
-                          ),
-                          hintText: '+91',
-                          hintStyle: TextStyle(
-                            color: Theme.of(context).colorScheme.surface,
-                            letterSpacing: 2,
-                            fontSize: 15,
-                          ),
+                      width: screenSize.width * 0.84,
+                      child: InternationalPhoneNumberInput(
+                        onInputChanged: (PhoneNumber number) {
+                          setState(() {
+                            completePhoneNumber = number.phoneNumber.toString();
+                          });
+                        },
+                        onInputValidated: (bool value) {
+                          print(value);
+                        },
+                        selectorConfig: SelectorConfig(
+                          selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                          useBottomSheetSafeArea: true,
                         ),
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                      height: screenSize.height * 0.066,
-                      width: screenSize.width * 0.67,
-                      child: TextFormField(
-                        //controller: _passwordController,
-                        keyboardType: TextInputType.number,
-
-                        validator: (val) => val != null && val.isNotEmpty
-                            ? null
-                            : 'Required Field',
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.surface,
-                              width: 2.0,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.surface,
-                              width: 2.0,
-                            ),
-                          ),
-                          hintText: 'Phone Number',
-                          hintStyle: TextStyle(
-                            color: fcolor,
-                            letterSpacing: 2,
-                            fontSize: 15,
-                          ),
-                        ),
-                        style: TextStyle(
-                            color: primary,
-                            letterSpacing: 2,
-                            fontWeight: FontWeight.w500),
+                        ignoreBlank: false,
+                        autoValidateMode: AutovalidateMode.disabled,
+                        selectorTextStyle: TextStyle(
+                            color: Theme.of(context).colorScheme.primary),
+                        // initialValue: "number",
+                        textFieldController: phoneNoControllers,
+                        formatInput: true,
+                        keyboardType: TextInputType.numberWithOptions(
+                            signed: true, decimal: true),
+                        inputBorder: OutlineInputBorder(),
+                        onSaved: (PhoneNumber number) {},
                       ),
                     ),
                   ],
@@ -143,12 +107,12 @@ class SignUpScreen extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () {
-                  // Navigator.push(
-                  //     context, MaterialPageRoute(builder: (_) => OtpScreen()));
+                  context.read<AuthBloc>().add(AuthEvent.signWithPhoneNumber(
+                      context: context, number: completePhoneNumber));
+                  print("----------$completePhoneNumber");
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      primary, // Use backgroundColor instead of primary
+                  backgroundColor: primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -178,7 +142,7 @@ class SignUpScreen extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.center,
                   child: GestureDetector(
-                    onTap: onTap,
+                    onTap: widget.onTap,
                     child: RichText(
                       text: TextSpan(children: [
                         TextSpan(

@@ -2,27 +2,26 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player/controller/bussiness_logic/profile/profile_bloc.dart';
-import 'package:video_player/controller/service/auth.dart';
+import 'package:video_player/controller/functions/auth.dart';
 import 'package:video_player/model/videomodel/videomoel.dart';
 import 'package:video_player/view/profile_create_screen/profile_create.dart';
-
 import 'package:video_player/view/profile_screen/profile.dart';
 import 'package:video_player/view/utils/custom_drawer/drawer.dart';
 import 'package:video_player/view/video_plater/video_player.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool isSearchCClicked = false;
-  bool videoisPlayed = false;
+  bool isSearchClicked = false;
   List<Videos> users = [];
+  List<Videos> filteredUsers = [];
   AuthRepositary authRepositary = AuthRepositary();
-
+  TextEditingController searchController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -34,68 +33,17 @@ class _HomeScreenState extends State<HomeScreen> {
   void fetchUsers() async {
     try {
       List<Videos> fetchedUsers = await authRepositary.getAllvideos();
-      print("========${fetchedUsers.length}");
-      print("------------------------${users.toString()}");
       setState(() {
-        users = fetchedUsers;
+        users.clear();
+        users.addAll(fetchedUsers);
       });
-      print("------------------------${users.toString()}");
-      print("=====0000==${users.length}");
     } catch (error) {
       print("Error fetching users: $error");
     }
   }
 
-  // final Map<String, dynamic> mediaJSON = {
-  //   "categories": [
-  //     {
-  //       "name": "Movies",
-  //       "videos": [
-  //         {
-  //           "description": "The first Blender Open Movie from 2006",
-  //           "sources": [
-  //             "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
-  //           ],
-  //           "subtitle": "By Blender Foundation",
-  //           "thumb": "images/ElephantsDream.jpg",
-  //           "title": "Elephant Dream"
-  //         },
-  //         {
-  //           "description": "HBO GO now works with Chromecast .",
-  //           "sources": [
-  //             "https://drive.google.com/file/d/1VzU10KfJfIH9rtSfVfTDPsZGgz_aHVA_/view?usp=drive_link"
-  //           ],
-  //           "subtitle": "By Google",
-  //           "thumb": "images/ForBiggerBlazes.jpg",
-  //           "title": "For Bigger Blazes"
-  //         },
-  //         {
-  //           "description": "The Smoking Tire is going on the 2010 ",
-  //           "sources": [
-  //             "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-  //           ],
-  //           "subtitle": "By Garage419",
-  //           "thumb": "images/WeAreGoingOnBullrun.jpg",
-  //           "title": "We Are Going On Bullrun"
-  //         },
-  //         {
-  //           "description": "The Smoking Tire meets up with Chris and Jorge. ",
-  //           "sources": [
-  //             "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-  //           ],
-  //           "subtitle": "By Garage419",
-  //           "thumb": "images/WhatCarCanYouGetForAGrand.jpg",
-  //           "title": "What care can you get"
-  //         }
-  //       ]
-  //     }
-  //   ]
-  // };
-
   @override
   Widget build(BuildContext context) {
-    //final List<dynamic> videos = mediaJSON['categories'][0]['videos'];
-    final screenSize = MediaQuery.of(context).size;
     final ThemeData theme = Theme.of(context);
     return Scaffold(
       key: _scaffoldKey,
@@ -114,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: theme.colorScheme.onSecondary,
                   boxShadow: [
                     BoxShadow(
-                      color: isSearchCClicked
+                      color: isSearchClicked
                           ? Colors.grey.withOpacity(0.0)
                           : Colors.grey.withOpacity(0.1),
                       spreadRadius: 2,
@@ -137,7 +85,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           image: AssetImage('assets/images/menus (1).png'),
                         ),
                       ),
-
                       SizedBox(width: 20),
                       InkWell(
                         onTap: () {
@@ -155,24 +102,23 @@ class _HomeScreenState extends State<HomeScreen> {
                               fontSize: 20),
                         ),
                       ),
-
                       Spacer(),
-
                       Expanded(
                         child: SizedBox(),
                       ),
                       InkWell(
-                          onTap: () {
-                            setState(() {
-                              isSearchCClicked = !isSearchCClicked;
-                            });
-                          },
-                          child: Icon(
-                            CupertinoIcons.search,
-                            color: !isSearchCClicked
-                                ? Colors.white
-                                : theme.colorScheme.secondary,
-                          )),
+                        onTap: () {
+                          setState(() {
+                            isSearchClicked = !isSearchClicked;
+                          });
+                        },
+                        child: Icon(
+                          CupertinoIcons.search,
+                          color: !isSearchClicked
+                              ? Colors.white
+                              : theme.colorScheme.secondary,
+                        ),
+                      ),
                       SizedBox(width: 20),
                       InkWell(
                         onTap: () {
@@ -216,13 +162,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(
-                          width: screenSize.width * 0.07), // Adjusted spacing
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.07),
                     ],
                   ),
                 ),
               ),
-              isSearchCClicked
+              isSearchClicked
                   ? Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
@@ -233,6 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         padding: EdgeInsets.symmetric(horizontal: 0),
                         child: TextField(
+                          controller: searchController,
                           style: TextStyle(color: Colors.white70),
                           decoration: InputDecoration(
                             hintText: '  Search...',
@@ -250,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           onChanged: (value) {
-                            //filterUsers(value);
+                            filterUsers(value);
                           },
                         ),
                       ),
@@ -258,20 +204,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   : SizedBox(),
               Expanded(
                 child: ListView.builder(
-                  itemCount: users.length,
+                  itemCount:
+                      isSearchClicked ? filteredUsers.length : users.length,
                   itemBuilder: (context, index) {
-                    final video = users[index];
-                    final String title = video.title ?? 'pooooo';
-                    final String description = video.description ?? '';
+                    final video =
+                        isSearchClicked ? filteredUsers[index] : users[index];
+                    final String title = video.title ?? '';
+                    final String description =
+                        video.description ?? 'exploring fantastical worlds';
                     return InkWell(
                       onTap: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => VideoPlayerScreen(
-                                      Url: video.videos!,
-                                      title: video.title ?? 'pooo',
-                                    )));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VideoPlayerScreen(
+                              Url: video.videos ?? '',
+                              title: title,
+                              image: state.image,
+                              description: video.description ?? '',
+                            ),
+                          ),
+                        );
                       },
                       child: Row(
                         children: [
@@ -297,24 +250,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                 title,
                                 maxLines: 1,
                                 overflow: TextOverflow.fade,
-                                style: TextStyle(fontWeight: FontWeight.w600),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
                               ),
                               Text(
-                                '25.2 Mp',
+                                description,
                                 style: TextStyle(
-                                    fontWeight: FontWeight.w400, fontSize: 13),
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 13,
+                                ),
                               ),
                             ],
                           ),
-                          // Spacer(),
-                          // Icon(
-                          //   download,
-                          //   color: Colors.green,
-                          // )
                         ],
                       ),
                     );
-                    //VideoWidget(videoUrl: videoUrls[index]);
                   },
                 ),
               ),
@@ -323,5 +275,23 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
     );
+  }
+
+  void filterUsers(String query) {
+    setState(() {
+      filteredUsers.clear();
+      if (query.isNotEmpty) {
+        filteredUsers = users
+            .where((user) =>
+                user.title!.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+
+        filteredUsers.sort((a, b) =>
+            a.title!.toLowerCase().indexOf(query.toLowerCase()) -
+            b.title!.toLowerCase().indexOf(query.toLowerCase()));
+      } else {
+        filteredUsers.addAll(users);
+      }
+    });
   }
 }

@@ -1,7 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-import 'package:video_player/controller/service/auth.dart';
+import 'package:video_player/controller/functions/auth.dart';
 
 class LogoutDialog extends StatelessWidget {
   static const IconData heart_broken_sharp =

@@ -1,13 +1,13 @@
 import 'dart:io';
-
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/controller/bussiness_logic/auth/auth_bloc.dart';
 import 'package:video_player/controller/bussiness_logic/profile/profile_bloc.dart';
+import 'package:video_player/view/profile_create_screen/widget/custom_button.dart';
+import 'package:video_player/view/profile_create_screen/widget/custom_textformfield.dart';
 
 import 'package:video_player/view/utils/constants/constants.dart';
 
@@ -27,7 +27,7 @@ class _ProfileCreateScreenState extends State<ProfileCreateScreen> {
   final _formKey = GlobalKey<FormState>();
   XFile? _image;
   bool _uploadingImage = false;
-  static late String downloadUrl;
+  String downloadUrl = '';
 
   @override
   void initState() {
@@ -163,7 +163,7 @@ class _ProfileCreateScreenState extends State<ProfileCreateScreen> {
                                                           image:
                                                               DecorationImage(
                                                             image: AssetImage(
-                                                                'asset/placeholderimage.webp'),
+                                                                'assets/images/placeholderimage.webp'),
                                                             fit: BoxFit.cover,
                                                           ),
                                                         ),
@@ -175,16 +175,7 @@ class _ProfileCreateScreenState extends State<ProfileCreateScreen> {
                               ),
                             ),
                             SizedBox(width: 10),
-                            Text(
-                              'Upload\nProfile Picture',
-                              style: TextStyle(
-                                color: theme.colorScheme.primary,
-                                fontSize: 22,
-                                fontWeight: FontWeight.w300,
-                                letterSpacing: 0,
-                                wordSpacing: 1,
-                              ),
-                            ),
+                            imageUploadTxt(theme),
                           ],
                         ),
                         SizedBox(height: 40),
@@ -244,47 +235,15 @@ class _ProfileCreateScreenState extends State<ProfileCreateScreen> {
                           },
                         ),
                         SizedBox(height: 60),
-                        ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              // Form is valid, proceed with submission
-                              context.read<AuthBloc>().add(
-                                    AuthEvent.addUserdata(
-                                      name: nameController.text,
-                                      mobile: phoneNoController.text,
-                                      image: downloadUrl,
-                                      email: emailController.text,
-                                      dateOfBirth: dobController.text,
-                                      context: context,
-                                    ),
-                                  );
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: theme.colorScheme.primary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: SizedBox(
-                              height: screenSize.height * 0.040,
-                              width: screenSize.width * 0.7,
-                              child: Center(
-                                child: Text(
-                                  'Continue',
-                                  style: TextStyle(
-                                    fontSize: screenSize.width * 0.04,
-                                    color: theme.colorScheme.background,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 2,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                        CustomButton(
+                            formKey: _formKey,
+                            nameController: nameController,
+                            phoneNoController: phoneNoController,
+                            downloadUrl: downloadUrl,
+                            emailController: emailController,
+                            dobController: dobController,
+                            theme: theme,
+                            screenSize: screenSize),
                       ],
                     ),
                   ),
@@ -292,49 +251,6 @@ class _ProfileCreateScreenState extends State<ProfileCreateScreen> {
               },
             );
           },
-        ),
-      ),
-    );
-  }
-}
-
-class CustomTextFormField extends StatelessWidget {
-  final String? hintText;
-  final TextEditingController? controller;
-  final TextInputType? keyboardType;
-  final FormFieldValidator<String>? validator;
-
-  const CustomTextFormField({
-    Key? key,
-    this.hintText,
-    this.controller,
-    this.keyboardType,
-    this.validator,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      height: 50,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: theme.colorScheme.onPrimary, width: 2),
-      ),
-      child: TextFormField(
-        controller: controller,
-        keyboardType: keyboardType,
-        validator: validator,
-        style: TextStyle(color: theme.colorScheme.primary),
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: TextStyle(
-            color: theme.colorScheme.onPrimary.withOpacity(0.6),
-            letterSpacing: 2,
-            fontSize: 15,
-          ),
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.all(12),
         ),
       ),
     );

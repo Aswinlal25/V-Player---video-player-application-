@@ -1,12 +1,11 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-import 'package:video_player/controller/bussiness_logic/auth/auth_bloc.dart';
-
+import 'package:video_player/view/login_sreen/widgets/custom_button.dart';
 import 'package:video_player/view/login_sreen/widgets/privacy_policy_text.dart';
-import 'package:lottie/lottie.dart';
+import 'package:video_player/view/login_sreen/widgets/signin_text.dart';
+import 'package:video_player/view/login_sreen/widgets/titile_part.dart';
 import 'package:video_player/view/utils/constants/constants.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -44,39 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 80,
-              ),
-              Center(
-                child: Container(
-                    width: 200,
-                    child: Lottie.asset('assets/animations/YPvV9by7nz.json',
-                        repeat: false)),
-              ),
-              SizedBox(
-                height: 60,
-              ),
-              Text(
-                'WELCOME\nBACK',
-                style: TextStyle(
-                    color: widget.primary,
-                    fontSize: 32,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 4,
-                    wordSpacing: 1),
-              ),
-              Text(
-                'Login to continue',
-                style: TextStyle(
-                    color: widget.primary,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 4,
-                    wordSpacing: 1),
-              ),
-              SizedBox(
-                height: 40,
-              ),
+              TitlePart(widget: widget),
               Form(
                 //  key: formKey,
                 child: Row(
@@ -119,66 +86,10 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 height: 40,
               ),
-              ElevatedButton(
-                onPressed: () {
-                  context.read<AuthBloc>().add(AuthEvent.signWithPhoneNumber(
-                      context: context, number: completePhoneNumber));
-                  print("----------$completePhoneNumber");
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: widget.primary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: SizedBox(
-                    height: screenSize.height * 0.040,
-                    width: screenSize.width * 0.7,
-                    child: Center(
-                      child: Text(
-                        'Request OTP',
-                        style: TextStyle(
-                            fontSize: screenSize.width * 0.04,
-                            color: widget.background,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 2),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              CustomButton(widget: widget, screenSize: screenSize),
               kheight15,
               Center(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: GestureDetector(
-                    onTap: widget.onTap,
-                    child: RichText(
-                      text: TextSpan(children: [
-                        TextSpan(
-                          text: "Don't have an Account\t",
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w400,
-                            letterSpacing: 2,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'Sign up',
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 2,
-                              wordSpacing: 1),
-                        )
-                      ]),
-                    ),
-                  ),
-                ),
+                child: SigninPageTxt(widget: widget),
               ),
               SizedBox(
                 height: 120,

@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:video_player/view/login_sreen/login.dart';
 
 class TitlePart extends StatelessWidget {
   const TitlePart({
     super.key,
-    required this.widget,
+    required this.theme,
   });
 
-  final LoginScreen widget;
+  final ThemeData theme;
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          height: 80,
+          height: 30,
         ),
         Center(
           child: Container(
@@ -28,25 +26,25 @@ class TitlePart extends StatelessWidget {
           height: 60,
         ),
         Text(
-          'WELCOME\nBACK',
+          'Verify OTP',
           style: TextStyle(
-              color: widget.primary,
+              color: theme.colorScheme.primary,
               fontSize: 32,
               fontWeight: FontWeight.w700,
-              letterSpacing: 4,
+              letterSpacing: 3,
               wordSpacing: 1),
         ),
         Text(
-          'Login to continue',
+          'We have send a OTP on your number \n \t\t \   \t\t\t\t\t\t\t\t\t\t+91 9207209856',
           style: TextStyle(
-              color: widget.primary,
-              fontSize: 18,
+              color: theme.colorScheme.primary,
+              fontSize: 17,
               fontWeight: FontWeight.w400,
-              letterSpacing: 4,
+              letterSpacing: 0.4,
               wordSpacing: 1),
         ),
         SizedBox(
-          height: 40,
+          height: 50,
         ),
       ],
     );

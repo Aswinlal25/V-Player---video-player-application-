@@ -1,21 +1,21 @@
 class Videos {
+  String id;
   String? videos;
   String? title;
   String? description;
 
-  Videos({this.videos, this.title, this.description});
+  Videos({
+    this.videos,
+    this.title,
+    this.description,
+    required this.id,
+  });
 
-  Videos.fromJson(Map<String, dynamic> json) {
-    videos = json['videos'];
-    title = json['title'];
-    description = json['description'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['videos'] = videos;
-    data['title'] = title;
-    data['description'] = description;
-    return data;
+  factory Videos.fromJson(String id, Map<String, dynamic> json) {
+    return Videos(
+        id: id,
+        videos: json['videos'],
+        title: json['title'],
+        description: json['description ']);
   }
 }

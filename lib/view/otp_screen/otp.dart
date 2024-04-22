@@ -2,9 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lottie/lottie.dart';
 import 'package:pinput/pinput.dart';
 import 'package:video_player/controller/bussiness_logic/auth/auth_bloc.dart';
+import 'package:video_player/view/otp_screen/widgets/title_part.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key, required this.verificationId});
@@ -49,39 +49,7 @@ class _OtpScreenState extends State<OtpScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              height: 30,
-            ),
-            Center(
-              child: Container(
-                  width: 200,
-                  child: Lottie.asset('assets/animations/YPvV9by7nz.json',
-                      repeat: false)),
-            ),
-            SizedBox(
-              height: 60,
-            ),
-            Text(
-              'Verify OTP',
-              style: TextStyle(
-                  color: theme.colorScheme.primary,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 3,
-                  wordSpacing: 1),
-            ),
-            Text(
-              'We have send a OTP on your number \n \t\t \   \t\t\t\t\t\t\t\t\t\t+91 9207209856',
-              style: TextStyle(
-                  color: theme.colorScheme.primary,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: 0.4,
-                  wordSpacing: 1),
-            ),
-            SizedBox(
-              height: 50,
-            ),
+            TitlePart(theme: theme),
             Form(
               key: formKey,
               child: Pinput(

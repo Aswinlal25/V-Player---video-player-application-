@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:video_player/controller/service/auth.dart';
+import 'package:video_player/controller/functions/auth.dart';
 
 part 'profile_event.dart';
 part 'profile_state.dart';

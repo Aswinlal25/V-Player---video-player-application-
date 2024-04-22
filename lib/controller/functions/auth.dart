@@ -1,7 +1,11 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:video_player/controller/bussiness_logic/auth/auth_bloc.dart';
 import 'package:video_player/model/usermodel/user.dart';
@@ -10,8 +14,10 @@ import 'package:video_player/view/home_screen/home.dart';
 import 'package:video_player/view/login_or_signup/login_or_signup.dart';
 import 'package:video_player/view/otp_screen/otp.dart';
 import 'package:video_player/view/utils/constants/constants.dart';
+import 'package:path_provider/path_provider.dart';
 
 class AuthRepositary {
+  List<String> savedVideoPaths = [];
   final auth = FirebaseAuth.instance;
   final dataServer = FirebaseFirestore.instance;
 
@@ -65,12 +71,6 @@ class AuthRepositary {
       // showToast(msg: e.message.toString());
     }
   }
-  // Future<bool> verifyOtp(String otp, String verificationid) async {
-  //   var credentials = await auth.signInWithCredential(
-  //       PhoneAuthProvider.credential(
-  //           verificationId: verificationid, smsCode: otp));
-  //   return credentials.user != null ? true : false;
-  // }
 
   void logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut().then((value) {
@@ -138,23 +138,54 @@ class AuthRepositary {
   }
 
   Future<List<Videos>> getAllvideos() async {
-    List<Videos> users = [];
+    List<Videos> videos = [];
     try {
       QuerySnapshot querySnapshot =
           await FirebaseFirestore.instance.collection("onlineVideos").get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        users = querySnapshot.docs.map((doc) {
-          return Videos.fromJson(doc.data() as Map<String, dynamic>);
+        videos = querySnapshot.docs.map((doc) {
+          return Videos.fromJson(doc.id, doc.data() as Map<String, dynamic>);
         }).toList();
-        // Print the fetched users
-        print("Fetched users: $users");
+
+        print("Fetched videos: $videos");
       } else {
-        print("No users found.");
+        print("No videos found.");
       }
     } catch (error) {
-      print("Error getting users: $error");
+      print("Error getting videos: $error");
+
+      throw error;
     }
-    return users;
+    return videos;
   }
+
+  void saveNetworkVideo(
+      String videoUrl, String albumName, BuildContext context) async {
+    String path = videoUrl;
+    GallerySaver.saveVideo(path, albumName: albumName).then((value) async {
+      showCustomSnackbar(context, 'Video saved to device');
+
+      // Get the directory where the video was saved
+      Directory? appDocDir = await getExternalStorageDirectory();
+      String savedVideoPath =
+          '${appDocDir?.path}/$albumName/${Uri.parse(videoUrl).pathSegments.last}';
+
+      savedVideoPaths.add(savedVideoPath);
+
+      print('Video saved to device: $savedVideoPath');
+    }).catchError((error) {
+      print('Error saving video: $error');
+      showCustomSnackbar(context, 'Failed to save video');
+    });
+  }
+
+  // void saveNetworkVideo(
+  //     String videoUrl, String albumName, BuildContext context) async {
+  //   String path = videoUrl;
+  //   GallerySaver.saveVideo(path, albumName: albumName).then((value) {
+  //     showCustomSnackbar(context, 'video saved to device');
+  //     print('video saved to device');
+  //   });
+  // }
 }

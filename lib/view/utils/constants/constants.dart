@@ -102,6 +102,19 @@ TextStyle logoTxtstyle() {
       fontSize: 20);
 }
 
+Text imageUploadTxt(ThemeData theme) {
+  return Text(
+    'Upload\nProfile Picture',
+    style: TextStyle(
+      color: theme.colorScheme.primary,
+      fontSize: 22,
+      fontWeight: FontWeight.w300,
+      letterSpacing: 0,
+      wordSpacing: 1,
+    ),
+  );
+}
+
 const IconData download = IconData(0xe201, fontFamily: 'MaterialIcons');
 
 const String forBiggerBlazesUrl =
